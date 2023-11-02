@@ -9,3 +9,5 @@ const PhotoNotFound = () => {
             </li>
         </div>)
 }
+
+export default PhotoNotFound;
