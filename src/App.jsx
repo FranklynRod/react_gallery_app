@@ -13,15 +13,25 @@ import apiKey from "./config";
 function App() {
   
     const [photos, setPhotos] = useState([]);
-    const [query, setQuery] = useState("")
+    const [query, setQuery] = useState("cats")
     useEffect(() => {
+      // let activeFetch = true;
       fetch(`https://www.flickr.com/services/rest/?method=flickr.photos.search&api_key=${apiKey}&tags=${query}&per_page=24&format=json&nojsoncallback=1`)
-      .then((response) => response.json())
-      .then((responseData) => setPhotos(responseData.data))
-      .catch(error => console.log("Error fetching and parsing data", error));
+        .then((response) => response.json())
+        .then((responseData) => {setPhotos(responseData.photos.photo);
+          console.log(responseData.photos.photo)
+          // if (activeFetch) {
+          //   setPhotos(responseData.photos.photo);
+          // }
+        })
+        .catch(error => console.log("Error fetching and parsing data", error));
+    
+      // return () => {
+      //   activeFetch = false;
+      // };
     }, [query]);
 
-  //  const handleQueryCHange = 
+
  
   return (
     <div>
