@@ -1,18 +1,18 @@
 import React from "react";
 import Photo from "./Photo";
+import { useParams } from "react-router-dom";
 
-const PhotoList = () => {
-    // const results = props.data;
-    // let photos = result.map(photo => <Photo url={photo} key={photo.id}/>)
+const PhotoList = (props) => {
+    const params = useParams();
+    const results = props.data;
+    const photos = results.map(image => <Photo key={image.id} url={`https://farm${image.farm}.staticflickr.com/${image.server}/${image.id}_${image.secret}.jpg`} alt={image.title} />)
     return (
         <div className="photo-container">
+            {console.log(params)}
             <h2>Results</h2>
             <ul>
-               <Photo />
-               {/* {photos} */}
-               
-           {/* <!-- Not Found --> */}
-               
+                {/* <Photo /> */}
+                {photos}
             </ul>
         </div>
     )
