@@ -11,6 +11,8 @@ function App() {
 
   const [photos, setPhotos] = useState([]);
   const [query, setQuery] = useState("dogs")
+  const [loading, setLoading] = useState(true);
+
   useEffect(() => {
     let activeFetch = true;
     fetch(`https://www.flickr.com/services/rest/?method=flickr.photos.search&api_key=${apiKey}&tags=${query}&per_page=24&format=json&nojsoncallback=1`)
@@ -18,6 +20,7 @@ function App() {
       .then((responseData) => {
         if (activeFetch) {
           setPhotos(responseData.photos.photo);
+          setLoading()
         }
       })
       .catch(error => console.log("Error fetching and parsing data", error));
@@ -38,15 +41,17 @@ const handleQueryChange = (searchText) => {
       <Search queryChange={handleQueryChange}/>
       <Nav />
       <Routes>
-      {/* <Route path="/" element={<LandingPage/>} />
-      <Route path="/cats" element={<cats/>} />
-      <Route path="/dogs" element={<LandingPage/>} />
-      <Route path="/computers" element={<LandingPage/>} /> */}
+      {/* <Route path="/" element={<PhotoList/>} />
+      <Route path="/cats" element={<PhotoList/>} />
+      <Route path="/dogs" element={<PhotoList/>}/>
+      <Route path="/computers" element={<PhotoList/>} /> */}
       <Route path="/search/:query" element={<PhotoList queryChange={handleQueryChange}/>} />
       <Route path="*" element={<PhotoNotFound/>} />
       </Routes>
-   
-      <PhotoList data={photos}/>
+  
+      { (loading)
+        ? <p>Loading ...</p> : <PhotoList data={photos}/>
+      }
 
     </div>
   )
