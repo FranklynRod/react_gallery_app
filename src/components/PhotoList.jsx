@@ -7,7 +7,10 @@ const PhotoList = (props) => {
     const params = useParams();
     const results = props.data;
     let photos;
-    results.length > 0 ? photos = results.map(image => <Photo key={image.id} url={`https://farm${image.farm}.staticflickr.com/${image.server}/${image.id}_${image.secret}.jpg`} alt={image.title} />): photos = <PhotoNotFound />
+    if (results) {
+        results.length > 0 ? photos = results.map(image => <Photo key={image.id} url={`https://farm${image.farm}.staticflickr.com/${image.server}/${image.id}_${image.secret}.jpg`} alt={image.title} />) : photos = <PhotoNotFound />
+    }
+
     return (
         <div className="photo-container">
             {console.log(params)}
