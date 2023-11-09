@@ -1,4 +1,4 @@
-import { Route, Routes} from "react-router-dom";
+import { Route, Routes, Navigate} from "react-router-dom";
 import { useEffect, useState } from 'react';
 import Search from './components/Search';
 import PhotoList from './components/PhotoList';
@@ -14,7 +14,7 @@ function App() {
       <Search />
       <Nav />
       <Routes>
-        <Route path="/" element={<PhotoList />} />
+        <Route path="/" element={<Navigate replace to="/cats"  />} />
       <Route path="/cats" element={<PhotoList topic={"cats"}/>} />
       <Route path="/dogs" element={<PhotoList topic={"dogs"} />}/>
       <Route path="/computers" element={<PhotoList topic={"computers"} />} />
