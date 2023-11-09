@@ -2,17 +2,14 @@ import React, {useRef , useState} from "react";
 import { useNavigate } from "react-router-dom";
 
 const Search = (props) => {
-  // ref is used so that value of input field can be accessed
+  //Ref is used so that value of input field can be accessed
   const search = useRef(null);
   const navigate = useNavigate();
 
 //Used to receive form input and update search query based on user input
   const handleSubmit = (e) => {
     e.preventDefault();
-    props.queryChange(search.current.value);
-    // let searchTerm = search.current.value ;
-    // let path = ``
-    // navigate();
+    navigate(`/search/${search.current.value}`);
     e.currentTarget.reset();
  
   }
