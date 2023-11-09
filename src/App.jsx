@@ -1,35 +1,31 @@
-import { Route, Routes } from "react-router-dom";
+import { Route, Routes, useLocation } from "react-router-dom";
 import { useEffect, useState } from 'react';
 import Search from './components/Search';
 import PhotoList from './components/PhotoList';
 import Nav from './components/Nav';
 import PhotoNotFound from "./components/PhotoNotFound";
 import apiKey from "./config";
+import { Navigate } from "react-router-dom";
 
 
 function App() {
   //Initialize and Set Variables with UseState
   const [photos, setPhotos] = useState([]);
-  const [query, setQuery] = useState("dogs")
+  const [query, setQuery] = useState(null)
   const [loading, setLoading] = useState(true);
-  const [cats, setCats] = useState([]);
-  const [dogs, setDogs] = useState([]);
-  const [computers, setComputers] = useState([]);
+  // const [cats, setCats] = useState([]);
+  // const [dogs, setDogs] = useState([]);
+  // const [computers, setComputers] = useState([]);
 
-  const setCatData = (data) => {
-    setCats(data);
-  };
-  
-  const setDogData = (data) => {
-    setDogs(data);
-  };
-  
-  const setComputerData = (data) => {
-    setComputers(data);
-  };
+  //Get current location and extract search query
+const location = useLocation();
+const searchQuery = location.pathname.split("/search/")[1];
+
   //UseEffect to sync with external system such as fetch data from API
+
+  
   const fetchData = (query) => {
-    
+      console.log(query)
       //to prevent race condition which causes incorrect/delayed data to be displayed
       setLoading(true)
       let activeFetch = true;
@@ -37,15 +33,9 @@ function App() {
         .then((response) => response.json())
         .then((responseData) => {
           if (activeFetch) {
-            if (query === "cats") {
-              setCatData(responseData.photos.photo);
-            } else if (query === "dogs") {
-              setDogData(responseData.photos.photo);
-            } else if (query === "computer") {
-              setComputerData
-            } else {
+            if (query) {
               setPhotos(responseData.photos.photo);
-            }
+            } 
             setLoading(false)
           }
         })
@@ -54,37 +44,53 @@ function App() {
       return () => {
         activeFetch = false;
       };
-  
-
   }
-  // useEffect(() => {   }, [query]);
+  useEffect(() => {
+    //Update query state with search query from URL
+    if (searchQuery) {
+    setQuery(searchQuery);
+    } else {
+    setQuery(null);
+    }
+    }, [location]);
 
+  useEffect(() => {
+    fetchData(query);
+    }, [query])
   //Function to handle updated query
-  const handleQueryChange = (searchText) => {
-    setQuery(searchText);
-    fetchData();
+  const handleQueryChange = (query) => {
+    setQuery(query);
+    fetchData(query);
   }
 
-
+//  useEffect(() => {  
+//   if (!dogs.length){
+//     fetchData("dogs");
+//   } if (!cats.length){
+//     fetchData("cats");
+//   } if (!computers.length) {
+//     fetchData("computers");
+//   }
+//   }, [dogs.length, cats.length, computers.length]);
 
   //props passed down to child components
   return (
     <div>
       <Search queryChange={handleQueryChange} />
-      <Nav />
+      <Nav queryChange={handleQueryChange}/>
       <Routes>
-        <Route path="/" element={<PhotoList/>} />
-      <Route path="/cats" element={<PhotoList data={cats} query={cats}/>} />
-      <Route path="/dogs" element={<PhotoList data={dogs} query={dogs}/>}/>
-      <Route path="/computers" element={<PhotoList data={computers} query={computers}/>} />
-        <Route path="/search/:query" element={<PhotoList queryChange={handleQueryChange} />} />
+        <Route path="/" element={<PhotoList />} />
+      <Route path="/cats" element={<PhotoList loading={loading} data={photos} query={"cats"} queryChange={handleQueryChange} />} />
+      <Route path="/dogs" element={<PhotoList loading={loading} data={photos} query={"dogs"} queryChange={handleQueryChange} />}/>
+      <Route path="/computers" element={<PhotoList loading={loading} data={photos} query={"computers"} queryChange={handleQueryChange}/>} />
+        <Route path="/search/:query" element={<PhotoList loading={loading} data={photos} queryChange={handleQueryChange} />} />
         <Route path="*" element={<PhotoNotFound />} />
       </Routes>
 
       {/* Displays loading message before attempting to display fetched data */}
-      {(loading)
+      {/* {(loading)
         ? <p>Loading ...</p> : <PhotoList data={photos} />
-      }
+      } */}
 
     </div>
   )
